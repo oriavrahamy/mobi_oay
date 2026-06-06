@@ -1,0 +1,95 @@
+<svg class="logo-robot" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1002.75 974.249975" preserveAspectRatio="xMidYMid meet" version="1.0"><defs><clipPath id="mobi-robot-756cd611d4"><path d="M 0.261719 374.84375 L 1001.863281 374.84375 L 1001.863281 721.679688 L 0.261719 721.679688 Z M 0.261719 374.84375" clip-rule="nonzero"/></clipPath><clipPath id="mobi-robot-b9295779c8"><path d="M 75.359375 261.902344 L 924.445312 261.902344 L 924.445312 394.875 L 75.359375 394.875 Z M 75.359375 261.902344" clip-rule="nonzero"/></clipPath><clipPath id="mobi-robot-1849d4abbf"><rect x="0" width="850" y="0" height="134"/></clipPath><clipPath id="mobi-robot-1e4f1f0c78"><path d="M 187.515625 686.199219 L 408.132812 686.199219 L 408.132812 973.09375 L 187.515625 973.09375 Z M 187.515625 686.199219" clip-rule="nonzero"/></clipPath><clipPath id="mobi-robot-adf9eace7b"><path d="M 0.515625 0.199219 L 221.132812 0.199219 L 221.132812 287.09375 L 0.515625 287.09375 Z M 0.515625 0.199219" clip-rule="nonzero"/></clipPath><clipPath id="mobi-robot-a8219fe72e"><rect x="0" width="222" y="0" height="288"/></clipPath><clipPath id="mobi-robot-2de9f63656"><path d="M 584.050781 686.199219 L 804.667969 686.199219 L 804.667969 973.09375 L 584.050781 973.09375 Z M 584.050781 686.199219" clip-rule="nonzero"/></clipPath><clipPath id="mobi-robot-205d6a655b"><path d="M 0.0507812 0.199219 L 220.667969 0.199219 L 220.667969 287.09375 L 0.0507812 287.09375 Z M 0.0507812 0.199219" clip-rule="nonzero"/></clipPath><clipPath id="mobi-robot-4393805ec9"><rect x="0" width="221" y="0" height="288"/></clipPath><clipPath id="mobi-robot-f72d4ec600"><path d="M 297.824219 374.84375 L 373.816406 374.84375 L 373.816406 532.351562 L 297.824219 532.351562 Z M 297.824219 374.84375" clip-rule="nonzero"/></clipPath><clipPath id="mobi-robot-4566ade12b"><path d="M 0.824219 0.84375 L 76.816406 0.84375 L 76.816406 158.351562 L 0.824219 158.351562 Z M 0.824219 0.84375" clip-rule="nonzero"/></clipPath><clipPath id="mobi-robot-5061fa8aad"><rect x="0" width="77" y="0" height="159"/></clipPath><clipPath id="mobi-robot-9d3eb6a227"><path d="M 618.367188 374.84375 L 694.359375 374.84375 L 694.359375 532.351562 L 618.367188 532.351562 Z M 618.367188 374.84375" clip-rule="nonzero"/></clipPath><clipPath id="mobi-robot-ad6b57964b"><path d="M 0.367188 0.84375 L 76.359375 0.84375 L 76.359375 158.351562 L 0.367188 158.351562 Z M 0.367188 0.84375" clip-rule="nonzero"/></clipPath><clipPath id="mobi-robot-b4df203a6c"><rect x="0" width="77" y="0" height="159"/></clipPath></defs>
+
+<g transform="matrix(1, 0, 0, 1, 0, 374)">
+  <path fill="#97c6ff" d="M 0.261719 0.84375 L 1001.484375 0.84375 L 1001.484375 347.679688 L 0.261719 347.679688 Z" fill-opacity="1" fill-rule="nonzero"/>
+</g>
+
+<g clip-path="url(#mobi-robot-b9295779c8)">
+  <g transform="matrix(1, 0, 0, 1, 75, 261)">
+    <g clip-path="url(#mobi-robot-1849d4abbf)">
+      <path fill="#97c6ff" d="M 0.359375 0.902344 L 849.625 0.902344 L 849.625 133.875 L 0.359375 133.875 Z" fill-opacity="1" fill-rule="nonzero"/>
+    </g>
+  </g>
+</g>
+
+<g clip-path="url(#mobi-robot-1e4f1f0c78)">
+  <g transform="matrix(1, 0, 0, 1, 187, 686)">
+    <g clip-path="url(#mobi-robot-a8219fe72e)">
+      <g clip-path="url(#mobi-robot-adf9eace7b)">
+        <path fill="#97c6ff" d="M 0.515625 0.199219 L 221.132812 0.199219 L 221.132812 287.175781 L 0.515625 287.175781 Z" fill-opacity="1" fill-rule="nonzero"/>
+      </g>
+    </g>
+  </g>
+</g>
+
+<g clip-path="url(#mobi-robot-2de9f63656)">
+  <g transform="matrix(1, 0, 0, 1, 584, 686)">
+    <g clip-path="url(#mobi-robot-4393805ec9)">
+      <g clip-path="url(#mobi-robot-205d6a655b)">
+        <path fill="#97c6ff" d="M 0.0507812 0.199219 L 220.667969 0.199219 L 220.667969 287.175781 L 0.0507812 287.175781 Z" fill-opacity="1" fill-rule="nonzero"/>
+      </g>
+    </g>
+  </g>
+</g>
+
+<g>
+  <animateTransform
+    attributeName="transform"
+    type="rotate"
+    values="-10 497 290; 10 497 290; -10 497 290"
+    keyTimes="0; 0.5; 1"
+    dur="3.2s"
+    repeatCount="indefinite"
+    calcMode="spline"
+    keySplines="0.42 0 0.58 1; 0.42 0 0.58 1"
+  />
+  <g transform="matrix(1, 0, 0, 1, 452, 110)">
+    <path fill="#97c6ff" d="M 0.703125 0 L 89.84375 0 L 89.84375 210 L 0.703125 210 Z" fill-opacity="1" fill-rule="nonzero"/>
+  </g>
+  <g transform="matrix(1, 0, 0, 1, 408, 15)">
+    <path fill="#97c6ff" d="M 0.132812 0 L 176.101562 0 L 176.101562 157.507812 L 0.132812 157.507812 Z" fill-opacity="1" fill-rule="nonzero"/>
+  </g>
+</g>
+
+<g clip-path="url(#mobi-robot-f72d4ec600)">
+  <g transform="matrix(1, 0, 0, 1, 297, 374)">
+    <g clip-path="url(#mobi-robot-5061fa8aad)">
+      <g clip-path="url(#mobi-robot-4566ade12b)">
+        <path fill="#353535" d="M 0.824219 0.84375 L 76.816406 0.84375 L 76.816406 158.46875 L 0.824219 158.46875 Z" fill-opacity="1" fill-rule="nonzero">
+          <animateTransform
+            attributeName="transform"
+            type="scale"
+            values="1 1; 1 1; 1 0.05; 1 1; 1 0.05; 1 1; 1 1"
+            keyTimes="0; 0.75; 0.77; 0.79; 0.81; 0.83; 1"
+            dur="4.5s"
+            repeatCount="indefinite"
+            transform-origin="38 79"
+          />
+        </path>
+      </g>
+    </g>
+  </g>
+</g>
+
+<g clip-path="url(#mobi-robot-9d3eb6a227)">
+  <g transform="matrix(1, 0, 0, 1, 618, 374)">
+    <g clip-path="url(#mobi-robot-b4df203a6c)">
+      <g clip-path="url(#mobi-robot-ad6b57964b)">
+        <path fill="#353535" d="M 0.367188 0.84375 L 76.359375 0.84375 L 76.359375 158.46875 L 0.367188 158.46875 Z" fill-opacity="1" fill-rule="nonzero">
+          <animateTransform
+            attributeName="transform"
+            type="scale"
+            values="1 1; 1 1; 1 0.05; 1 1; 1 0.05; 1 1; 1 1"
+            keyTimes="0; 0.75; 0.77; 0.79; 0.81; 0.83; 1"
+            dur="4.5s"
+            repeatCount="indefinite"
+            transform-origin="38 79"
+          />
+        </path>
+      </g>
+    </g>
+  </g>
+</g>
+
+<text visibility="hidden" x="980" y="940" fill="#353535" opacity="0.35" font-family="sans-serif" font-weight="bold" font-size="20" text-anchor="end">mobi O.A.Y</text>
+</svg>

@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="he" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mobi O.A.Y Agent — AI Agent Management Platform</title>
+  <meta name="description" content="Innovative platform for managing generative AI agents with visual multi-agent collaboration">
+  <link href="https://fonts.googleapis.com/css2?family=Karantina:wght@400;700&family=Rubik:wght@400&family=Titan+One&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=liquidglass-global-v2">
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script>
+    (function() {
+      const savedTheme = localStorage.getItem('mobi-theme') || 'light';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      if (!localStorage.getItem('mobi-theme')) {
+        localStorage.setItem('mobi-theme', 'light');
+      }
+    })();
+  </script>
+</head>
+<body>
+
+  <!-- ═══════════ LIQUID GLASS SVG FILTERS ═══════════ -->
+  <svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+    <defs>
+      <!-- Primary liquid glass filter: displacement + specular -->
+      <filter id="lg-filter" x="-10%" y="-10%" width="120%" height="120%" color-interpolation-filters="sRGB">
+        <feTurbulence type="fractalNoise" baseFrequency="0.018 0.022" numOctaves="4" seed="2" result="noise"/>
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="14" xChannelSelector="R" yChannelSelector="G" result="displaced"/>
+        <feGaussianBlur in="displaced" stdDeviation="0.4" result="blurred"/>
+        <feSpecularLighting in="noise" surfaceScale="3" specularConstant="0.9" specularExponent="80" lighting-color="rgba(255,255,255,0.85)" result="specular">
+          <feDistantLight azimuth="235" elevation="68"/>
+        </feSpecularLighting>
+        <feComposite in="specular" in2="SourceGraphic" operator="in" result="spec-masked"/>
+        <feBlend in="blurred" in2="spec-masked" mode="screen" result="combined"/>
+        <feComponentTransfer>
+          <feFuncA type="linear" slope="1"/>
+        </feComponentTransfer>
+      </filter>
+
+      <!-- Subtle variant for small elements (buttons, chips) -->
+      <filter id="lg-filter-sm" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
+        <feTurbulence type="fractalNoise" baseFrequency="0.03 0.04" numOctaves="3" seed="7" result="noise"/>
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="6" xChannelSelector="R" yChannelSelector="G" result="displaced"/>
+        <feSpecularLighting in="noise" surfaceScale="2" specularConstant="0.7" specularExponent="60" lighting-color="rgba(255,255,255,0.7)" result="specular">
+          <feDistantLight azimuth="235" elevation="65"/>
+        </feSpecularLighting>
+        <feComposite in="specular" in2="SourceGraphic" operator="in" result="spec-masked"/>
+        <feBlend in="displaced" in2="spec-masked" mode="screen"/>
+      </filter>
+    </defs>
+  </svg>
+
+  <!-- ═══════════ GLOBAL BACKGROUND MESH (makes glass visible) ═══════════ -->
+  <div id="bg-mesh" aria-hidden="true">
+    <div class="bg-orb bg-orb-1"></div>
+    <div class="bg-orb bg-orb-2"></div>
+    <div class="bg-orb bg-orb-3"></div>
+    <div class="bg-orb bg-orb-4"></div>
+  </div>
+  <!-- ═══════════ HEADER ═══════════ -->
+  <header id="app-header">
+    <div class="header-left">
+      <div class="logo">
+        <span class="logo-icon" aria-hidden="true">
+          <svg class="logo-robot" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1002.75 974.249975" preserveAspectRatio="xMidYMid meet" version="1.0"><defs><clipPath id="mobi-robot-756cd611d4"><path d="M 0.261719 374.84375 L 1001.863281 374.84375 L 1001.863281 721.679688 L 0.261719 721.679688 Z M 0.261719 374.84375" clip-rule="nonzero"/></clipPath><clipPath id="mobi-robot-b9295779c8"><path d="M 75.359375 261.902344 L 924.445312 261.902344 L 924.445312 394.875 L 75.359375 394.875 Z M 75.359375 261.902344" clip-rule="nonzero"/></clipPath><clipPath id="mobi-robot-1849d4abbf"><rect x="0" width="850" y="0" height="134"/></clipPath><clipPath id="mobi-robot-1e4f1f0c78"><path d="M 187.515625 686.199219 L 408.132812 686.199219 L 408.132812 973.09375 L 187.515625 973.09375 Z M 187.515625 686.199219" clip-rule="nonzero"/></clipPath><clipPath id="mobi-robot-adf9eace7b"><path d="M 0.515625 0.199219 L 221.132812 0.199219 L 221.132812 287.09375 L 0.515625 287.09375 Z M 0.515625 0.199219" clip-rule="nonzero"/></clipPath><clipPath id="mobi-robot-a8219fe72e"><rect x="0" width="222" y="0" height="288"/></clipPath><clipPath id="mobi-robot-2de9f63656"><path d="M 584.050781 686.199219 L 804.667969 686.199219 L 804.667969 973.09375 L 584.050781 973.09375 Z M 584.050781 686.199219" clip-rule="nonzero"/></clipPath><clipPath id="mobi-robot-205d6a655b"><path d="M 0.0507812 0.199219 L 220.667969 0.199219 L 220.667969 287.09375 L 0.0507812 287.09375 Z M 0.0507812 0.199219" clip-rule="nonzero"/></clipPath><clipPath id="mobi-robot-4393805ec9"><rect x="0" width="221" y="0" height="288"/></clipPath><clipPath id="mobi-robot-f72d4ec600"><path d="M 297.824219 374.84375 L 373.816406 374.84375 L 373.816406 532.351562 L 297.824219 532.351562 Z M 297.824219 374.84375" clip-rule="nonzero"/></clipPath><clipPath id="mobi-robot-4566ade12b"><path d="M 0.824219 0.84375 L 76.816406 0.84375 L 76.816406 158.351562 L 0.824219 158.351562 Z M 0.824219 0.84375" clip-rule="nonzero"/></clipPath><clipPath id="mobi-robot-5061fa8aad"><rect x="0" width="77" y="0" height="159"/></clipPath><clipPath id="mobi-robot-9d3eb6a227"><path d="M 618.367188 374.84375 L 694.359375 374.84375 L 694.359375 532.351562 L 618.367188 532.351562 Z M 618.367188 374.84375" clip-rule="nonzero"/></clipPath><clipPath id="mobi-robot-ad6b57964b"><path d="M 0.367188 0.84375 L 76.359375 0.84375 L 76.359375 158.351562 L 0.367188 158.351562 Z M 0.367188 0.84375" clip-rule="nonzero"/></clipPath><clipPath id="mobi-robot-b4df203a6c"><rect x="0" width="77" y="0" height="159"/></clipPath></defs>
+
+<g transform="matrix(1, 0, 0, 1, 0, 374)">
+  <path fill="#97c6ff" d="M 0.261719 0.84375 L 1001.484375 0.84375 L 1001.484375 347.679688 L 0.261719 347.679688 Z" fill-opacity="1" fill-rule="nonzero"/>
+</g>
+
+<g clip-path="url(#mobi-robot-b9295779c8)">
+  <g transform="matrix(1, 0, 0, 1, 75, 261)">
+    <g clip-path="url(#mobi-robot-1849d4abbf)">
+      <path fill="#97c6ff" d="M 0.359375 0.902344 L 849.625 0.902344 L 849.625 133.875 L 0.359375 133.875 Z" fill-opacity="1" fill-rule="nonzero"/>
+    </g>
+  </g>
+</g>
+
+<g clip-path="url(#mobi-robot-1e4f1f0c78)">
+  <g transform="matrix(1, 0, 0, 1, 187, 686)">
+    <g clip-path="url(#mobi-robot-a8219fe72e)">
+      <g clip-path="url(#mobi-robot-adf9eace7b)">
+        <path fill="#97c6ff" d="M 0.515625 0.199219 L 221.132812 0.199219 L 221.132812 287.175781 L 0.515625 287.175781 Z" fill-opacity="1" fill-rule="nonzero"/>
+      </g>
+    </g>
+  </g>
+</g>
+
+<g clip-path="url(#mobi-robot-2de9f63656)">
+  <g transform="matrix(1, 0, 0, 1, 584, 686)">
+    <g clip-path="url(#mobi-robot-4393805ec9)">
+      <g clip-path="url(#mobi-robot-205d6a655b)">
+        <path fill="#97c6ff" d="M 0.0507812 0.199219 L 220.667969 0.199219 L 220.667969 287.175781 L 0.0507812 287.175781 Z" fill-opacity="1" fill-rule="nonzero"/>
+      </g>
+    </g>
+  </g>
+</g>
+
+<g>
+  <animateTransform
+    attributeName="transform"
+    type="rotate"
+    values="-10 497 290; 10 497 290; -10 497 290"
+    keyTimes="0; 0.5; 1"
+    dur="3.2s"
+    repeatCount="indefinite"
+    calcMode="spline"
+    keySplines="0.42 0 0.58 1; 0.42 0 0.58 1"
+  />
+  <g transform="matrix(1, 0, 0, 1, 452, 110)">
+    <path fill="#97c6ff" d="M 0.703125 0 L 89.84375 0 L 89.84375 210 L 0.703125 210 Z" fill-opacity="1" fill-rule="nonzero"/>
+  </g>
+  <g transform="matrix(1, 0, 0, 1, 408, 15)">
+    <path fill="#97c6ff" d="M 0.132812 0 L 176.101562 0 L 176.101562 157.507812 L 0.132812 157.507812 Z" fill-opacity="1" fill-rule="nonzero"/>
+  </g>
+</g>
+
+<g clip-path="url(#mobi-robot-f72d4ec600)">
+  <g transform="matrix(1, 0, 0, 1, 297, 374)">
+    <g clip-path="url(#mobi-robot-5061fa8aad)">
+      <g clip-path="url(#mobi-robot-4566ade12b)">
+        <path fill="#353535" d="M 0.824219 0.84375 L 76.816406 0.84375 L 76.816406 158.46875 L 0.824219 158.46875 Z" fill-opacity="1" fill-rule="nonzero">
+          <animateTransform
+            attributeName="transform"
+            type="scale"
+            values="1 1; 1 1; 1 0.05; 1 1; 1 0.05; 1 1; 1 1"
+            keyTimes="0; 0.75; 0.77; 0.79; 0.81; 0.83; 1"
+            dur="4.5s"
+            repeatCount="indefinite"
+            transform-origin="38 79"
+          />
+        </path>
+      </g>
+    </g>
+  </g>
+</g>
+
+<g clip-path="url(#mobi-robot-9d3eb6a227)">
+  <g transform="matrix(1, 0, 0, 1, 618, 374)">
+    <g clip-path="url(#mobi-robot-b4df203a6c)">
+      <g clip-path="url(#mobi-robot-ad6b57964b)">
+        <path fill="#353535" d="M 0.367188 0.84375 L 76.359375 0.84375 L 76.359375 158.46875 L 0.367188 158.46875 Z" fill-opacity="1" fill-rule="nonzero">
+          <animateTransform
+            attributeName="transform"
+            type="scale"
+            values="1 1; 1 1; 1 0.05; 1 1; 1 0.05; 1 1; 1 1"
+            keyTimes="0; 0.75; 0.77; 0.79; 0.81; 0.83; 1"
+            dur="4.5s"
+            repeatCount="indefinite"
+            transform-origin="38 79"
+          />
+        </path>
+      </g>
+    </g>
+  </g>
+</g>
+
+<text visibility="hidden" x="980" y="940" fill="#353535" opacity="0.35" font-family="sans-serif" font-weight="bold" font-size="20" text-anchor="end">mobi O.A.Y</text>
+</svg>
+
+        </span>
+        <span class="logo-text">Mobi <span class="logo-accent">O.A.Y</span></span>
+      </div>
+    </div>
+    <nav class="tabs" id="main-tabs">
+      <button class="tab active" data-tab="agents">
+        <span class="material-icons-round">smart_toy</span>
+        Agents
+      </button>
+      <button class="tab" data-tab="tools">
+        <span class="material-icons-round">build</span>
+        Tools
+      </button>
+      <button class="tab" data-tab="notebooklm">
+        <span class="material-icons-round">menu_book</span>
+        Notebook LM
+      </button>
+      <button class="tab" data-tab="memory">
+        <span class="material-icons-round">psychology</span>
+        Memory
+      </button>
+    </nav>
+    <div class="header-right">
+      <button class="icon-btn" id="global-settings-btn" title="Global Settings">
+        <span class="material-icons-round">settings</span>
+      </button>
+      <button class="icon-btn" id="theme-toggle-btn" title="Toggle Theme">
+        <span class="material-icons-round">light_mode</span>
+      </button>
+      <div class="agent-count" id="agent-count">0 Agents</div>
+    </div>
+  </header>
+
+  <!-- ═══════════ TAB PANELS (overlays) ═══════════ -->
+  <!-- Tools Panel -->
+  <div class="tab-panel" id="tools-panel">
+    <div class="panel-header" style="margin-bottom: 15px;">
+      <h2><span class="material-icons-round">build</span> Tools & Integrations</h2>
+      <p class="panel-desc">Connect your services. Agents will use these tools to complete tasks.</p>
+    </div>
+    
+    <div class="tools-sub-tabs" id="tools-sub-tabs">
+      <button class="sub-tab active" data-subtab="integrations">Integrations</button>
+      <button class="sub-tab" data-subtab="data">Data</button>
+    </div>
+
+    <div class="sub-panel active" id="tools-integrations-panel">
+      <div class="tools-grid" id="tools-grid"></div>
+    </div>
+    
+    <div class="sub-panel" id="tools-data-panel">
+      <div id="tools-data-container">
+        <div class="memory-empty">
+          <span class="material-icons-round">info</span>
+          <p>Connect tools to view their data here.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- NotebookLM Panel -->
+  <div class="tab-panel notebooklm-panel" id="notebooklm-panel" dir="rtl">
+    <div class="notebooklm-topbar">
+      <button class="notebooklm-round-btn" title="NotebookLM status"><span class="material-icons-round">graphic_eq</span></button>
+      <div class="notebooklm-titlebar">
+        <strong id="notebooklm-dynamic-title">MOBI O.A.Y AGENT</strong>
+      </div>
+      <div class="notebooklm-topbar-actions">
+        <button class="notebooklm-create-btn" id="notebooklm-create-btn">
+          <span class="material-icons-round">add</span>
+          יצירת נוטבוק
+        </button>
+        <button class="notebooklm-switch-btn" id="notebooklm-rename-btn" title="שינוי שם המחברת">
+          שינוי שם
+        </button>
+        <button class="notebooklm-switch-btn" id="notebooklm-delete-btn" title="מחיקת המחברת הנבחרת">
+          מחיקה
+        </button>
+      </div>
+    </div>
+
+    <div class="notebooklm-shell">
+      <!-- RIGHT PANE: מקורות (Sources) -->
+      <aside class="notebooklm-pane notebooklm-sources-pane">
+        <div class="notebooklm-pane-header">
+          <span class="material-icons-round">view_sidebar</span>
+          <strong>מקורות</strong>
+        </div>
+        <div class="notebooklm-source-actions-bar">
+          <button class="notebooklm-source-add" id="notebooklm-refresh-btn" title="רענון מחברות ומקורות">
+            <span class="material-icons-round">sync</span>
+            רענון
+          </button>
+          <button class="notebooklm-source-add" id="notebooklm-add-source-btn" title="הוספת מקור">
+            <span class="material-icons-round">add</span>
+            מקור
+          </button>
+        </div>
+        <div class="notebooklm-settings-mini">
+          <input type="text" id="notebooklm-bridge-url" value="http://localhost:8787/notebooklm" title="Local Bridge URL">
+          <input type="text" id="notebooklm-cli-command" value="notebooklm" title="CLI Command">
+        </div>
+        <div class="form-group notebooklm-notebook-picker">
+          <label for="notebooklm-select">בחירת מחברת</label>
+          <select id="notebooklm-select">
+            <option value="">טען מחברות...</option>
+          </select>
+        </div>
+        <div class="notebooklm-source-list" id="notebooklm-source-list">
+          <label class="notebooklm-source-item">
+            <input type="checkbox" checked>
+            <span>המחברת שנבחרה</span>
+            <span class="material-icons-round">description</span>
+          </label>
+        </div>
+        <div class="notebooklm-status" id="notebooklm-status">ה-bridge עדיין לא נבדק.</div>
+      </aside>
+
+      <!-- CENTER PANE: Document Viewer / Chat -->
+      <main class="notebooklm-pane notebooklm-main-pane">
+        <div class="notebooklm-main-toolbar">
+          <button class="icon-btn" title="עוד"><span class="material-icons-round">more_vert</span></button>
+          <button class="icon-btn" title="הגדרות"><span class="material-icons-round">tune</span></button>
+          <strong>צ׳אט</strong>
+        </div>
+        <div class="notebooklm-doc-area" id="notebooklm-chat">
+          <!-- Document Source View -->
+          <div class="notebooklm-source-view" id="notebooklm-source-view">
+            <div class="notebooklm-source-view-header">
+            </div>
+            <h2 class="notebooklm-source-title" id="notebooklm-source-title"></h2>
+            <div class="notebooklm-source-meta">
+              <span class="notebooklm-source-date" id="notebooklm-source-date"></span>
+            </div>
+            <div class="notebooklm-source-body" id="notebooklm-source-body">
+            </div>
+            <div class="notebooklm-source-actions">
+            </div>
+            <div class="notebooklm-source-footer">
+            </div>
+          </div>
+        </div>
+        <!-- Notes area at bottom -->
+        <div class="notebooklm-notes-area">
+          <div class="notebooklm-notes-hint">
+            <span class="material-icons-round">edit_note</span>
+            <span>התוכן מוצגר כ-345567 שנפות כאן אחרי שמוסיפים מקורות, אפשר ליצור כדי להוסיף סקירה קולית. מדריך לימוד, מצגת ועוד!</span>
+          </div>
+          <div class="notebooklm-input-row">
+            <textarea id="notebooklm-prompt" rows="2" placeholder="כאן אפשר לשאול שאלה או ליצור משהו"></textarea>
+            <button class="send-btn" id="notebooklm-ask-btn" title="שליחה">
+              <span class="material-icons-round">arrow_back</span>
+            </button>
+          </div>
+          <button class="notebooklm-add-note-btn">
+            <span class="material-icons-round">add_circle_outline</span>
+            הוספת הערה
+          </button>
+        </div>
+      </main>
+
+      <!-- LEFT PANE: סטודיו (Studio) -->
+      <aside class="notebooklm-pane notebooklm-studio-pane">
+        <div class="notebooklm-pane-header">
+          <span class="material-icons-round">view_sidebar</span>
+          <strong>סטודיו</strong>
+        </div>
+        <div class="notebooklm-studio-grid">
+          <button class="notebooklm-studio-card audio" data-notebook-action="podcast">
+            <div class="notebooklm-studio-card-nav">
+              <span class="material-icons-round">chevron_left</span>
+            </div>
+            <span class="notebooklm-studio-card-icon material-icons-round">podcasts</span>
+            <strong>סקירה קולית</strong>
+            <small>פודקאסט</small>
+          </button>
+          <button class="notebooklm-studio-card summary" data-notebook-action="summary">
+            <div class="notebooklm-studio-card-nav">
+              <span class="material-icons-round">chevron_left</span>
+            </div>
+            <span class="notebooklm-studio-card-icon material-icons-round">article</span>
+            <strong>סיכום כללי</strong>
+            <small>תקציר</small>
+          </button>
+          <button class="notebooklm-studio-card mind" data-notebook-action="mind_map">
+            <div class="notebooklm-studio-card-nav">
+              <span class="material-icons-round">chevron_left</span>
+            </div>
+            <span class="notebooklm-studio-card-icon material-icons-round">account_tree</span>
+            <strong>מפת חשיבה</strong>
+            <small>מיפוי רעיונות</small>
+          </button>
+          <button class="notebooklm-studio-card slides" data-notebook-action="slides">
+            <div class="notebooklm-studio-card-nav">
+              <span class="material-icons-round">chevron_left</span>
+            </div>
+            <span class="notebooklm-studio-card-icon material-icons-round">slideshow</span>
+            <strong>מצגת</strong>
+            <small>Slides</small>
+          </button>
+          <button class="notebooklm-studio-card report" data-notebook-action="report">
+            <div class="notebooklm-studio-card-nav">
+              <span class="material-icons-round">chevron_left</span>
+            </div>
+            <span class="notebooklm-studio-card-icon material-icons-round">assignment</span>
+            <strong>דוח / בריף</strong>
+            <small>Report</small>
+          </button>
+          <button class="notebooklm-studio-card video" data-notebook-action="video">
+            <div class="notebooklm-studio-card-nav">
+              <span class="material-icons-round">chevron_left</span>
+            </div>
+            <span class="notebooklm-studio-card-icon material-icons-round">movie</span>
+            <strong>סקירת וידאו</strong>
+            <small>MP4</small>
+          </button>
+          <button class="notebooklm-studio-card quiz" data-notebook-action="quiz">
+            <div class="notebooklm-studio-card-nav">
+              <span class="material-icons-round">chevron_left</span>
+            </div>
+            <span class="notebooklm-studio-card-icon material-icons-round">quiz</span>
+            <strong>Quiz</strong>
+            <small>JSON / MD / HTML</small>
+          </button>
+          <button class="notebooklm-studio-card cards" data-notebook-action="flashcards">
+            <div class="notebooklm-studio-card-nav">
+              <span class="material-icons-round">chevron_left</span>
+            </div>
+            <span class="notebooklm-studio-card-icon material-icons-round">style</span>
+            <strong>Flashcards</strong>
+            <small>כרטיסיות</small>
+          </button>
+          <button class="notebooklm-studio-card info" data-notebook-action="infographic">
+            <div class="notebooklm-studio-card-nav">
+              <span class="material-icons-round">chevron_left</span>
+            </div>
+            <span class="notebooklm-studio-card-icon material-icons-round">insert_chart</span>
+            <strong>Infographic</strong>
+            <small>PNG</small>
+          </button>
+          <button class="notebooklm-studio-card table" data-notebook-action="data_table">
+            <div class="notebooklm-studio-card-nav">
+              <span class="material-icons-round">chevron_left</span>
+            </div>
+            <span class="notebooklm-studio-card-icon material-icons-round">table_chart</span>
+            <strong>Data Table</strong>
+            <small>CSV</small>
+          </button>
+          <button class="notebooklm-studio-card data" data-notebook-action="artifacts">
+            <div class="notebooklm-studio-card-nav">
+              <span class="material-icons-round">chevron_left</span>
+            </div>
+            <span class="notebooklm-studio-card-icon material-icons-round">inventory_2</span>
+            <strong>Artifacts</strong>
+            <small>רשימה והורדה</small>
+          </button>
+          <button class="notebooklm-studio-card share" data-notebook-action="share_status">
+            <div class="notebooklm-studio-card-nav">
+              <span class="material-icons-round">chevron_left</span>
+            </div>
+            <span class="notebooklm-studio-card-icon material-icons-round">ios_share</span>
+            <strong>שיתוף</strong>
+            <small>קישורים והרשאות</small>
+          </button>
+          <button class="notebooklm-studio-card research" data-notebook-action="research">
+            <div class="notebooklm-studio-card-nav">
+              <span class="material-icons-round">chevron_left</span>
+            </div>
+            <span class="notebooklm-studio-card-icon material-icons-round">travel_explore</span>
+            <strong>Research</strong>
+            <small>Web / Drive</small>
+          </button>
+        </div>
+        <div class="notebooklm-studio-hint">
+          <span class="material-icons-round">auto_fix_high</span>
+          <p>אחרי שמוסיפים מקורות, אפשר ליצור כאן סקירה קולית, מצגת, דוח, מדריך לימוד ועוד.</p>
+        </div>
+        <div class="notebooklm-studio-viewer" id="notebooklm-studio-viewer">
+          <div class="notebooklm-studio-viewer-header">
+            <span class="material-icons-round">visibility</span>
+            <strong id="notebooklm-studio-viewer-title">תצוגת תוכן</strong>
+            <button class="icon-btn" id="notebooklm-studio-viewer-close" title="סגור">
+              <span class="material-icons-round">close</span>
+            </button>
+          </div>
+          <div class="notebooklm-studio-viewer-content" id="notebooklm-studio-viewer-content">
+            <div class="notebooklm-studio-empty">
+              <span class="material-icons-round">description</span>
+              <p>לחץ על אחד הכפתורים למעלה כדי ליצור תוכן</p>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+
+  <!-- Memory Panel -->
+  <div class="tab-panel" id="memory-panel">
+    <div class="panel-header">
+      <h2><span class="material-icons-round">psychology</span> Shared Memory Pool</h2>
+      <p class="panel-desc">Collective memory across all agents — tasks, conversations, and accumulated knowledge.</p>
+      <div class="memory-actions">
+        <button class="btn btn-ghost" id="clear-memory-btn">
+          <span class="material-icons-round">delete_sweep</span> Clear All
+        </button>
+      </div>
+    </div>
+    <div class="memory-log" id="memory-log">
+      <div class="memory-empty">
+        <span class="material-icons-round">cloud_off</span>
+        <p>No memories recorded yet.<br>Start a conversation with an agent to begin.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ CANVAS ═══════════ -->
+  <div id="canvas-container">
+    <div id="canvas">
+      <div id="canvas-agents"></div>
+    </div>
+    <!-- Create Agent FAB -->
+    <button class="fab" id="create-agent-fab" title="Create New Agent">
+      <span class="material-icons-round">add</span>
+    </button>
+    <!-- Zoom controls -->
+    <div class="zoom-controls">
+      <button id="zoom-in" title="Zoom In"><span class="material-icons-round">add</span></button>
+      <span class="zoom-level" id="zoom-level">100%</span>
+      <button id="zoom-out" title="Zoom Out"><span class="material-icons-round">remove</span></button>
+      <button id="zoom-reset" title="Reset"><span class="material-icons-round">center_focus_strong</span></button>
+    </div>
+  </div>
+
+  <!-- ═══════════ CHAT PANEL ═══════════ -->
+  <div id="chat-panel" class="closed">
+    <div class="chat-header">
+      <div class="chat-agent-info">
+        <img class="chat-avatar" id="chat-avatar" src="" alt="">
+        <div>
+          <div class="chat-agent-name" id="chat-agent-name">Agent</div>
+          <div class="chat-agent-role" id="chat-agent-role">Role</div>
+        </div>
+      </div>
+      <div class="chat-actions">
+        <button class="icon-btn" id="chat-settings-btn" title="Agent Settings">
+          <span class="material-icons-round">settings</span>
+        </button>
+        <button class="icon-btn" id="chat-delete-btn" title="Delete Agent">
+          <span class="material-icons-round">delete</span>
+        </button>
+        <button class="icon-btn" id="chat-close-btn" title="Close">
+          <span class="material-icons-round">close</span>
+        </button>
+      </div>
+    </div>
+    <div class="chat-messages" id="chat-messages"></div>
+    <div class="chat-input-area">
+      <textarea id="chat-input" placeholder="Send a task to this agent..." rows="1"></textarea>
+      <button class="send-btn" id="chat-send-btn">
+        <span class="material-icons-round">send</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ═══════════ INTER-AGENT CHAT MODAL ═══════════ -->
+  <div class="modal-overlay" id="inter-chat-overlay">
+    <div class="modal inter-chat-modal">
+      <div class="modal-header">
+        <h3 id="inter-chat-title">Agent Conversation</h3>
+        <button class="icon-btn modal-close" data-close="inter-chat-overlay">
+          <span class="material-icons-round">close</span>
+        </button>
+      </div>
+      <div class="inter-chat-messages" id="inter-chat-messages"></div>
+    </div>
+  </div>
+
+  <!-- ═══════════ AGENT CREATION MODAL ═══════════ -->
+  <div class="modal-overlay" id="agent-modal-overlay">
+    <div class="modal agent-modal">
+      <div class="modal-header">
+        <h3 id="agent-modal-title">Create New Agent</h3>
+        <button class="icon-btn modal-close" data-close="agent-modal-overlay">
+          <span class="material-icons-round">close</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-grid">
+          <!-- Left: Settings -->
+          <div class="modal-col">
+            <div class="form-section">
+              <h4>Technical Settings</h4>
+              <div class="form-group">
+                <label for="agent-name">Agent Name</label>
+                <input type="text" id="agent-name" placeholder="e.g. Financial Analyst">
+              </div>
+              <div class="form-group">
+                <label for="agent-model">Groq Model</label>
+                <select id="agent-model">
+                  <option value="llama-3.3-70b-versatile">Llama 3.3 70B</option>
+                  <option value="llama-3.1-8b-instant" selected>Llama 3.1 8B</option>
+                  <option value="gemma2-9b-it">Gemma 2 9B</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="agent-api-key">Groq API Key <span class="optional">(leave blank to use Global Key)</span></label>
+                <input type="password" id="agent-api-key" placeholder="AIza...">
+              </div>
+              <div class="form-group">
+                <label for="agent-system-prompt">System Prompt</label>
+                <textarea id="agent-system-prompt" rows="4" placeholder="Define the agent's role, personality, and objectives..."></textarea>
+              </div>
+            </div>
+            <div class="form-section">
+              <h4>Tool Access Permissions</h4>
+              <div class="tool-permissions" id="tool-permissions"></div>
+            </div>
+          </div>
+          <!-- Right: Avatar -->
+          <div class="modal-col">
+            <div class="form-section avatar-section">
+              <h4>Avatar Customization</h4>
+              <div class="avatar-preview-wrap">
+                <img class="avatar-preview" id="avatar-preview" src="https://api.dicebear.com/9.x/adventurer/svg?seed=default" alt="Avatar Preview">
+              </div>
+              <div class="avatar-options">
+                <div class="form-group">
+                  <label for="avatar-seed">Seed / Name</label>
+                  <input type="text" id="avatar-seed" placeholder="Random seed" value="agent1">
+                </div>
+                <div class="form-group">
+                  <label for="avatar-earrings">Earrings</label>
+                  <select id="avatar-earrings">
+                    <option value="">None</option>
+                    <option value="variant01">Style 1</option>
+                    <option value="variant02">Style 2</option>
+                    <option value="variant03">Style 3</option>
+                    <option value="variant04">Style 4</option>
+                    <option value="variant05">Style 5</option>
+                    <option value="variant06">Style 6</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="avatar-eyebrows">Eyebrows</label>
+                  <select id="avatar-eyebrows">
+                    <option value="variant01">Style 1</option>
+                    <option value="variant02">Style 2</option>
+                    <option value="variant03">Style 3</option>
+                    <option value="variant04">Style 4</option>
+                    <option value="variant05">Style 5</option>
+                    <option value="variant06">Style 6</option>
+                    <option value="variant07">Style 7</option>
+                    <option value="variant08">Style 8</option>
+                    <option value="variant09">Style 9</option>
+                    <option value="variant10">Style 10</option>
+                    <option value="variant11">Style 11</option>
+                    <option value="variant12">Style 12</option>
+                    <option value="variant13">Style 13</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="avatar-eyes">Eyes</label>
+                  <select id="avatar-eyes"></select>
+                </div>
+                <div class="form-group">
+                  <label for="avatar-mouth">Mouth</label>
+                  <select id="avatar-mouth"></select>
+                </div>
+                <div class="form-group">
+                  <label>Features</label>
+                  <div class="checkbox-row">
+                    <label class="chip"><input type="checkbox" value="birthmark" class="avatar-feature"> Birthmark</label>
+                    <label class="chip"><input type="checkbox" value="blush" class="avatar-feature"> Blush</label>
+                    <label class="chip"><input type="checkbox" value="freckles" class="avatar-feature"> Freckles</label>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="avatar-glasses">Glasses</label>
+                  <select id="avatar-glasses">
+                    <option value="">None</option>
+                    <option value="variant01">Style 1</option>
+                    <option value="variant02">Style 2</option>
+                    <option value="variant03">Style 3</option>
+                    <option value="variant04">Style 4</option>
+                    <option value="variant05">Style 5</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="avatar-hair">Hair Style</label>
+                  <select id="avatar-hair">
+                    <option value="long01">Long 1</option><option value="long02">Long 2</option>
+                    <option value="long03">Long 3</option><option value="long04">Long 4</option>
+                    <option value="long05">Long 5</option><option value="long06">Long 6</option>
+                    <option value="long07">Long 7</option><option value="long08">Long 8</option>
+                    <option value="long09">Long 9</option><option value="long10">Long 10</option>
+                    <option value="long11">Long 11</option><option value="long12">Long 12</option>
+                    <option value="long13">Long 13</option><option value="long14">Long 14</option>
+                    <option value="long15">Long 15</option><option value="long16">Long 16</option>
+                    <option value="long17">Long 17</option><option value="long18">Long 18</option>
+                    <option value="long19">Long 19</option>
+                    <option value="short01">Short 1</option><option value="short02">Short 2</option>
+                    <option value="short03">Short 3</option><option value="short04">Short 4</option>
+                    <option value="short05">Short 5</option><option value="short06">Short 6</option>
+                    <option value="short07">Short 7</option><option value="short08">Short 8</option>
+                    <option value="short09">Short 9</option><option value="short10">Short 10</option>
+                    <option value="short11">Short 11</option><option value="short12">Short 12</option>
+                    <option value="short13">Short 13</option><option value="short14">Short 14</option>
+                    <option value="short15">Short 15</option><option value="short16">Short 16</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="avatar-hair-color">Hair Color</label>
+                  <div class="color-picker-row">
+                    <input type="color" id="avatar-hair-color" value="#6a4e35">
+                    <span class="color-hex" id="hair-color-hex">#6a4e35</span>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="avatar-skin-color">Skin Color</label>
+                  <div class="color-picker-row">
+                    <input type="color" id="avatar-skin-color" value="#f2d3b1">
+                    <span class="color-hex" id="skin-color-hex">#f2d3b1</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" data-close="agent-modal-overlay">Cancel</button>
+        <button class="btn btn-primary" id="save-agent-btn">
+          <span class="material-icons-round">check</span> Create Agent
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ TOOL CONNECTION MODAL ═══════════ -->
+  <div class="modal-overlay" id="tool-modal-overlay">
+    <div class="modal tool-modal">
+      <div class="modal-header">
+        <h3 id="tool-modal-title">Connect Tool</h3>
+        <button class="icon-btn modal-close" data-close="tool-modal-overlay">
+          <span class="material-icons-round">close</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div id="google-login-section" style="display:none; margin-bottom: 20px;">
+          <button class="btn btn-primary" id="google-login-btn" style="width:100%; justify-content:center; background:#4285f4; color:#fff;">
+            <svg style="width:18px;height:18px;margin-right:8px;fill:currentColor;" viewBox="0 0 24 24">
+              <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+              <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+              <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+              <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+            </svg>
+            Sign in with Google
+          </button>
+          <div style="text-align:center; margin-top:8px; font-size:0.75rem; color:var(--text3);">
+            Or configure OAuth credentials manually:
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="tool-api-key">API Key</label>
+          <input type="password" id="tool-api-key" placeholder="Enter API Key">
+        </div>
+        <div class="form-group">
+          <label for="tool-client-id">OAuth Client ID <span class="optional">(optional)</span></label>
+          <input type="text" id="tool-client-id" placeholder="Client ID">
+        </div>
+        <div class="form-group">
+          <label for="tool-client-secret">OAuth Client Secret <span class="optional">(optional)</span></label>
+          <input type="password" id="tool-client-secret" placeholder="Client Secret">
+        </div>
+        <div class="form-group">
+          <label for="tool-token">OAuth Token <span class="optional">(optional)</span></label>
+          <input type="password" id="tool-token" placeholder="Access Token">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" data-close="tool-modal-overlay">Cancel</button>
+        <button class="btn btn-danger" id="disconnect-tool-btn" style="display:none">
+          <span class="material-icons-round">link_off</span> Disconnect
+        </button>
+        <button class="btn btn-primary" id="connect-tool-btn">
+          <span class="material-icons-round">link</span> Connect
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ GLOBAL SETTINGS MODAL ═══════════ -->
+  <div class="modal-overlay" id="global-settings-overlay">
+    <div class="modal tool-modal">
+      <div class="modal-header">
+        <h3>Global Settings</h3>
+        <button class="icon-btn modal-close" data-close="global-settings-overlay">
+          <span class="material-icons-round">close</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="global-api-key">Global Groq API Key</label>
+          <input type="password" id="global-api-key" placeholder="gsk_...">
+          <p style="font-size:0.75rem; color:var(--text3); margin-top:6px; line-height:1.4;">
+            This API key will be used by all agents unless they have their own specific key configured.
+            You can get a free key from <a href="https://console.groq.com/keys" target="_blank" style="color:var(--primary2)">Groq Console</a>.
+          </p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" data-close="global-settings-overlay">Cancel</button>
+        <button class="btn btn-primary" id="save-global-settings-btn">
+          <span class="material-icons-round">check</span> Save Settings
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ TOAST CONTAINER ═══════════ -->
+  <div id="toast-container"></div>
+
+  <!-- ═══════════ SCRIPTS ═══════════ -->
+  <script src="js/store.js"></script>
+  <script src="js/tools.js"></script>
+  <script src="js/memory.js"></script>
+  <script src="js/canvas.js"></script>
+  <script src="js/agents.js"></script>
+  <script src="js/chat.js"></script>
+  <script src="js/collaboration.js"></script>
+  <script src="js/app.js?v=notebooklm-actions-20260601"></script>
+</body>
+</html>
