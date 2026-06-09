@@ -181,6 +181,10 @@
         <span class="material-icons-round">psychology</span>
         Memory
       </button>
+      <button class="tab" data-tab="microbit">
+        <span class="material-icons-round">memory</span>
+        bit:micro
+      </button>
     </nav>
     <div class="header-right">
       <button class="icon-btn" id="global-settings-btn" title="Global Settings">
@@ -474,6 +478,124 @@
       <div class="memory-empty">
         <span class="material-icons-round">cloud_off</span>
         <p>No memories recorded yet.<br>Start a conversation with an agent to begin.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- bit:micro Panel -->
+  <div class="tab-panel" id="microbit-panel">
+    <div class="panel-header">
+      <h2><span class="material-icons-round">memory</span> bit:micro</h2>
+      <p class="panel-desc">Bridge virtual AI agents with physical micro:bit hardware</p>
+    </div>
+    
+    <div class="microbit-bento-grid">
+      <!-- Connection Widget -->
+      <div class="bento-card connection-card">
+        <div class="bento-card-header">
+          <span class="material-icons-round">usb</span>
+          <strong>Connection</strong>
+        </div>
+        <div class="connection-status">
+          <div class="status-indicator" id="microbit-status-indicator"></div>
+          <span id="microbit-status-text">מנותק</span>
+        </div>
+        <button class="btn btn-primary" id="connect-microbit-btn">
+          <span class="material-icons-round">link</span>
+          חבר כרטיס
+        </button>
+        <button class="btn btn-danger" id="disconnect-microbit-btn" style="display:none;">
+          <span class="material-icons-round">link_off</span>
+          נתק
+        </button>
+      </div>
+
+      <!-- Agent Binding -->
+      <div class="bento-card agent-binding-card">
+        <div class="bento-card-header">
+          <span class="material-icons-round">smart_toy</span>
+          <strong>שיוך סוכן</strong>
+        </div>
+        <div class="agent-binding-content">
+          <div class="agent-avatar-display" id="bound-agent-avatar">
+            <span class="material-icons-round">help_outline</span>
+          </div>
+          <select id="agent-binding-select" class="form-control">
+            <option value="">בחר סוכן...</option>
+          </select>
+          <button class="btn btn-primary" id="bind-agent-btn">
+            <span class="material-icons-round">check</span>
+            שייך סוכן
+          </button>
+        </div>
+      </div>
+
+      <!-- Sensor Triggers -->
+      <div class="bento-card sensor-triggers-card">
+        <div class="bento-card-header">
+          <span class="material-icons-round">sensors</span>
+          <strong>חיישנים וטריגרים</strong>
+        </div>
+        <div class="sensor-list">
+          <div class="sensor-item">
+            <div class="sensor-info">
+              <span class="material-icons-round">mic</span>
+              <span>מיקרופון</span>
+            </div>
+            <div class="sensor-controls">
+              <label class="checkbox-label">
+                <input type="checkbox" id="mic-clap-trigger" checked>
+                <span>זיהוי מחיאת כף</span>
+              </label>
+              <div class="threshold-control">
+                <label>סף רגישות:</label>
+                <input type="range" id="mic-threshold" min="50" max="255" value="150">
+                <span id="mic-threshold-value">150</span>
+              </div>
+            </div>
+          </div>
+          <div class="sensor-item">
+            <div class="sensor-info">
+              <span class="material-icons-round">accelerometer</span>
+              <span>מד תאוצה</span>
+            </div>
+            <div class="sensor-controls">
+              <label class="checkbox-label">
+                <input type="checkbox" id="accel-shake-trigger">
+                <span>זיהוי נענוע</span>
+              </label>
+            </div>
+          </div>
+          <div class="sensor-item">
+            <div class="sensor-info">
+              <span class="material-icons-round">light_mode</span>
+              <span>חיישן אור</span>
+            </div>
+            <div class="sensor-controls">
+              <label class="checkbox-label">
+                <input type="checkbox" id="light-trigger">
+                <span>זיהוי שינוי אור</span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Serial Monitor -->
+      <div class="bento-card serial-monitor-card">
+        <div class="bento-card-header">
+          <span class="material-icons-round">terminal</span>
+          <strong>Serial Monitor</strong>
+          <button class="icon-btn" id="clear-serial-btn" title="נקה לוג">
+            <span class="material-icons-round">clear</span>
+          </button>
+        </div>
+        <div class="serial-monitor" id="serial-monitor">
+          <div class="serial-empty">
+            <span class="material-icons-round">terminal</span>
+            <p>חבר את הכרטיס כדי לראות את הלוג</p>
+          </div>
+        </div>
       </div>
     </div>
   </div>
