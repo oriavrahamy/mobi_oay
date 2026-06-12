@@ -631,6 +631,23 @@
     </div>
   </div>
 
+  <!-- ═══════════ ORCHESTRATOR INPUT BAR ═══════════ -->
+  <div class="orchestrator-container" id="orchestrator-container">
+    <div class="orchestrator-bar" id="orchestrator-bar">
+      <textarea class="orchestrator-input" id="orchestrator-input" 
+                placeholder="תן משימה לסוכן העל... הוא כבר יפעיל את שאר הסוכנים בשבילך"
+                rows="3"></textarea>
+      <button class="orchestrator-send-btn" id="orchestrator-send-btn" title="Send to Orchestrator">
+        <span class="material-icons-round">send</span>
+      </button>
+    </div>
+    <!-- Progress indicator -->
+    <div class="orchestrator-progress" id="orchestrator-progress" style="display: none;">
+      <div class="progress-bar"><div class="progress-fill"></div></div>
+      <span class="progress-text" id="progress-text">Processing...</span>
+    </div>
+  </div>
+
   <!-- ═══════════ CHAT PANEL ═══════════ -->
   <div id="chat-panel" class="closed">
     <div class="chat-header">
@@ -836,6 +853,28 @@
     </div>
   </div>
 
+  <!-- ═══════════ ORCHESTRATOR PLAN PREVIEW MODAL ═══════════ -->
+  <div class="modal-overlay" id="orchestrator-plan-overlay">
+    <div class="modal orchestrator-plan-modal">
+      <div class="modal-header">
+        <h3>Execution Plan - סוכן על</h3>
+        <button class="icon-btn modal-close" data-close="orchestrator-plan-overlay">
+          <span class="material-icons-round">close</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="plan-goal" id="plan-goal"></div>
+        <div class="plan-tasks" id="plan-tasks"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" data-close="orchestrator-plan-overlay">Cancel</button>
+        <button class="btn btn-primary" id="orchestrator-execute-btn">
+          <span class="material-icons-round">play_arrow</span> Execute Plan
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- ═══════════ TOOL CONNECTION MODAL ═══════════ -->
   <div class="modal-overlay" id="tool-modal-overlay">
     <div class="modal tool-modal">
@@ -928,6 +967,7 @@
   <script src="js/agents.js"></script>
   <script src="js/chat.js"></script>
   <script src="js/collaboration.js"></script>
+  <script src="js/orchestrator.js"></script>
   <script src="js/app.js?v=notebooklm-actions-20260601"></script>
 </body>
 </html>

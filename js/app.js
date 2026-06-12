@@ -164,6 +164,7 @@ if (window.opener && window.location.hash.includes('access_token')) {
   AgentManager.loadAllToCanvas();
   ToolManager.renderToolsPanel();
   MemoryManager.renderMemoryPanel();
+  OrchestratorManager.init();
 
   // ── Theme toggler ──
   const themeToggleBtn = document.getElementById('theme-toggle-btn');
@@ -195,6 +196,7 @@ if (window.opener && window.location.hash.includes('access_token')) {
   };
   const canvasContainer = document.getElementById('canvas-container');
   const canvasToolbar = document.getElementById('canvas-toolbar');
+  const orchestratorContainer = document.getElementById('orchestrator-container');
 
   tabs.forEach(tab => {
     tab.addEventListener('click', () => {
@@ -211,12 +213,20 @@ if (window.opener && window.location.hash.includes('access_token')) {
           canvasToolbar.style.pointerEvents = 'auto';
           canvasToolbar.style.transform = 'translateX(-50%) translateY(0)';
         }
+        if (orchestratorContainer) {
+          orchestratorContainer.style.display = 'flex';
+          orchestratorContainer.style.pointerEvents = 'auto';
+        }
       } else {
         canvasContainer.style.display = 'none';
         if (canvasToolbar) {
           canvasToolbar.style.opacity = '0';
           canvasToolbar.style.pointerEvents = 'none';
           canvasToolbar.style.transform = 'translateX(-50%) translateY(20px)';
+        }
+        if (orchestratorContainer) {
+          orchestratorContainer.style.display = 'none';
+          orchestratorContainer.style.pointerEvents = 'none';
         }
       }
       
@@ -231,6 +241,33 @@ if (window.opener && window.location.hash.includes('access_token')) {
       }
     });
   });
+
+  // Initialize tab visibility on page load
+  const activeTab = document.querySelector('.tab.active');
+  if (activeTab) {
+    const activeTabId = activeTab.dataset.tab;
+    if (activeTabId === 'agents') {
+      canvasContainer.style.display = 'block';
+      if (canvasToolbar) {
+        canvasToolbar.style.opacity = '1';
+        canvasToolbar.style.pointerEvents = 'auto';
+        canvasToolbar.style.transform = 'translateX(-50%) translateY(0)';
+      }
+      if (orchestratorContainer) {
+        orchestratorContainer.style.display = 'flex';
+        orchestratorContainer.style.pointerEvents = 'auto';
+      }
+    } else {
+      canvasContainer.style.display = 'none';
+      if (orchestratorContainer) {
+        orchestratorContainer.style.display = 'none';
+        orchestratorContainer.style.pointerEvents = 'none';
+      }
+      if (activeTabId !== 'agents' && tabPanels[activeTabId]) {
+        tabPanels[activeTabId].classList.add('active');
+      }
+    }
+  }
 
   // ── Tools Sub-Tab switching ──
   const subTabs = document.querySelectorAll('.sub-tab');
