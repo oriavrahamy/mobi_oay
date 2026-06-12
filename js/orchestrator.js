@@ -71,6 +71,77 @@ const OrchestratorManager = (() => {
     }
   }
 
+  function getGlobalModelConfig() {
+    const service = localStorage.getItem('mobi-model-service') || 'groq';
+    const localEndpoint = localStorage.getItem('mobi-lmstudio-url') || '';
+    const localModel = localStorage.getItem('mobi-lmstudio-model') || '';
+    const apiKey = localStorage.getItem('mobi-global-api-key') || '';
+    return { service, localEndpoint, localModel, apiKey };
+  }
+
+  async function sendChatRequest(config, messages, temperature = 0.7, maxTokens = 1024) {
+    const { service, localEndpoint, localModel, apiKey, model } = config;
+    const requestModel = model || (service === 'lmstudio' ? localModel : undefined);
+
+    if (service === 'lmstudio') {
+      if (!localEndpoint || !requestModel) {
+        throw new Error('Local LM Studio endpoint or model is not configured.');
+      }
+      let url = localEndpoint.replace(/\/+$/, '');
+      if (!url.endsWith('/v1/chat/completions') && !url.endsWith('/chat/completions')) {
+        url += '/v1/chat/completions';
+      }
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: requestModel,
+          messages,
+          temperature,
+          max_tokens: maxTokens
+        })
+      });
+      return response;
+    }
+
+    if (!apiKey) {
+      throw new Error('Global Groq API key not configured. Please add one in Settings.');
+    }
+
+    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`
+      },
+      body: JSON.stringify({
+        model: requestModel || 'llama-3.1-8b-instant',
+        messages,
+        temperature,
+        max_tokens: maxTokens
+      })
+    });
+
+    return response;
+  }
+
+  function getAgentChatConfig(agent) {
+    const globalConfig = getGlobalModelConfig();
+    if (globalConfig.service === 'lmstudio') {
+      return {
+        service: 'lmstudio',
+        localEndpoint: globalConfig.localEndpoint,
+        model: agent.model || globalConfig.localModel,
+        apiKey: ''
+      };
+    }
+    return {
+      service: 'groq',
+      model: agent.model || 'llama-3.1-8b-instant',
+      apiKey: agent.apiKey || globalConfig.apiKey
+    };
+  }
+
   async function submitTask() {
     console.log('[Orchestrator] submitTask called');
     
@@ -144,12 +215,8 @@ const OrchestratorManager = (() => {
   }
 
   async function generateExecutionPlan(userGoal, agentContext, recentContext) {
-    const apiKey = localStorage.getItem('mobi-global-api-key');
-    console.log('[Orchestrator] API Key exists:', !!apiKey);
-    
-    if (!apiKey) {
-      throw new Error('Global Groq API key not configured. Go to Settings to add one. Get a free key at https://console.groq.com/keys.');
-    }
+    const modelConfig = getGlobalModelConfig();
+    console.log('[Orchestrator] Model service:', modelConfig.service, 'model:', modelConfig.localModel || 'default');
 
     const systemPrompt = `You are an expert orchestrator agent (סוכן על) responsible for breaking down complex user goals into executable subtasks.
 
@@ -182,41 +249,29 @@ Respond with ONLY this JSON structure (no markdown, no backticks):
 }`;
 
     try {
-      console.log('[Orchestrator] Calling Groq API...');
-      
-      const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiKey}`
+      console.log('[Orchestrator] Calling model service...');
+      const modelConfig = getGlobalModelConfig();
+      const response = await sendChatRequest(modelConfig, [
+        {
+          role: 'system',
+          content: systemPrompt
         },
-        body: JSON.stringify({
-          model: 'llama-3.1-8b-instant',
-          messages: [
-            {
-              role: 'system',
-              content: systemPrompt
-            },
-            {
-              role: 'user',
-              content: userGoal
-            }
-          ],
-          temperature: 0.7,
-          max_tokens: 2048
-        })
-      });
+        {
+          role: 'user',
+          content: userGoal
+        }
+      ], 0.7, 2048);
 
-      console.log('[Orchestrator] Groq response status:', response.status);
+      console.log('[Orchestrator] Model service response status:', response.status);
 
       if (!response.ok) {
         const errData = await response.json();
         console.error('[Orchestrator] API Error:', errData);
-        throw new Error(errData.error?.message || `Groq API Error: ${response.status}`);
+        throw new Error(errData.error?.message || `Model service Error: ${response.status}`);
       }
 
       const data = await response.json();
-      console.log('[Orchestrator] Groq response received');
+      console.log('[Orchestrator] Model service response received');
       
       const content = data.choices?.[0]?.message?.content;
       
@@ -292,6 +347,7 @@ Respond with ONLY this JSON structure (no markdown, no backticks):
     hidePlanPreview();
     showProgress(`Executing ${currentPlan.tasks.length} tasks...`);
     isProcessing = true;
+    if (window.Microbit) window.Microbit.sendState('THINK');
 
     try {
       if (orchestratorWorker) {
@@ -299,7 +355,8 @@ Respond with ONLY this JSON structure (no markdown, no backticks):
         orchestratorWorker.postMessage({
           type: 'execute-plan',
           plan: currentPlan,
-          agents: AgentManager.getAll()
+          agents: AgentManager.getAll(),
+          globalModelConfig: getGlobalModelConfig()
         });
       } else {
         // Fallback to main thread
@@ -341,6 +398,7 @@ Respond with ONLY this JSON structure (no markdown, no backticks):
 
         // Execute task via agent
         const output = await executeAgentTask(agent, task.action, input);
+        if (window.Microbit) window.Microbit.sendState('SPEAK');
         
         results.push({
           step: task.step,
@@ -370,43 +428,33 @@ Respond with ONLY this JSON structure (no markdown, no backticks):
 
     // All tasks completed - aggregate results
     await generateFinalResponse(plan, results, lastOutput);
+    if (window.Microbit) window.Microbit.sendState('IDLE');
   }
 
   async function executeAgentTask(agent, action, parameters) {
-    // Execute task via agent using Groq API
-    
     const prompt = `Execute this task: ${action} with parameters: ${JSON.stringify(parameters)}`;
-    const apiKey = agent.apiKey || localStorage.getItem('mobi-global-api-key');
-    
-    if (!apiKey) {
+    const agentConfig = getAgentChatConfig(agent);
+
+    if (agentConfig.service === 'groq' && !agentConfig.apiKey) {
       throw new Error(`No API key for agent "${agent.name}"`);
     }
 
     try {
-      const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiKey}`
+      const response = await sendChatRequest(agentConfig, [
+        {
+          role: 'system',
+          content: agent.systemPrompt || 'You are a helpful assistant.'
         },
-        body: JSON.stringify({
-          model: agent.model || 'llama-3.1-8b-instant',
-          messages: [
-            {
-              role: 'system',
-              content: agent.systemPrompt || 'You are a helpful assistant.'
-            },
-            {
-              role: 'user',
-              content: prompt
-            }
-          ],
-          temperature: 0.5,
-          max_tokens: 1024
-        })
-      });
+        {
+          role: 'user',
+          content: prompt
+        }
+      ], 0.5, 1024);
 
-      if (!response.ok) throw new Error('Agent API call failed');
+      if (!response.ok) {
+        const errData = await response.json();
+        throw new Error(errData.error?.message || 'Agent API call failed');
+      }
       
       const data = await response.json();
       return data.choices?.[0]?.message?.content || '';
@@ -416,36 +464,22 @@ Respond with ONLY this JSON structure (no markdown, no backticks):
   }
 
   async function generateFinalResponse(plan, results, lastOutput) {
-    const apiKey = localStorage.getItem('mobi-global-api-key');
-    if (!apiKey) return lastOutput;
-
+    const modelConfig = getGlobalModelConfig();
     const resultsSummary = results.map(r => 
       `Step ${r.step} (${r.agent}): ${r.output.substring(0, 100)}...`
     ).join('\n');
 
     try {
-      const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiKey}`
+      const response = await sendChatRequest(modelConfig, [
+        {
+          role: 'system',
+          content: 'You are an expert summarizer. Create a brief, human-friendly summary of task execution results in Hebrew or English.'
         },
-        body: JSON.stringify({
-          model: 'llama-3.1-8b-instant',
-          messages: [
-            {
-              role: 'system',
-              content: 'You are an expert summarizer. Create a brief, human-friendly summary of task execution results in Hebrew or English.'
-            },
-            {
-              role: 'user',
-              content: `Goal: ${plan.goal}\n\nExecution Results:\n${resultsSummary}`
-            }
-          ],
-          temperature: 0.7,
-          max_tokens: 512
-        })
-      });
+        {
+          role: 'user',
+          content: `Goal: ${plan.goal}\n\nExecution Results:\n${resultsSummary}`
+        }
+      ], 0.7, 512);
 
       if (response.ok) {
         const data = await response.json();
@@ -463,15 +497,18 @@ Respond with ONLY this JSON structure (no markdown, no backticks):
 
     if (type === 'progress') {
       updateProgress(message);
+      if (window.Microbit && message.includes('completed')) window.Microbit.sendState('SPEAK');
     } else if (type === 'complete') {
       showCompletionMessage(result);
       isProcessing = false;
       hideProgress();
       MemoryManager.addLog('task', `Orchestration Complete: ${result}`, 'סוכן על');
+      if (window.Microbit) window.Microbit.sendState('IDLE');
     } else if (type === 'error') {
       showError(error);
       isProcessing = false;
       hideProgress();
+      if (window.Microbit) window.Microbit.sendState('IDLE');
     }
   }
 

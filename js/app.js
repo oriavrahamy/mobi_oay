@@ -192,7 +192,8 @@ if (window.opener && window.location.hash.includes('access_token')) {
   const tabPanels = {
     tools: document.getElementById('tools-panel'),
     notebooklm: document.getElementById('notebooklm-panel'),
-    memory: document.getElementById('memory-panel')
+    memory: document.getElementById('memory-panel'),
+    microbit: document.getElementById('microbit-panel')
   };
   const canvasContainer = document.getElementById('canvas-container');
   const canvasToolbar = document.getElementById('canvas-toolbar');
@@ -1082,13 +1083,27 @@ if (window.opener && window.location.hash.includes('access_token')) {
   // ── Global Settings ──
   document.getElementById('global-settings-btn').addEventListener('click', () => {
     const key = localStorage.getItem('mobi-global-api-key') || '';
+    const modelService = localStorage.getItem('mobi-model-service') || 'groq';
+    const localEndpoint = localStorage.getItem('mobi-lmstudio-url') || 'http://localhost:8000';
+    const localModel = localStorage.getItem('mobi-lmstudio-model') || '';
+
+    document.getElementById('global-model-service').value = modelService;
+    document.getElementById('global-local-endpoint').value = localEndpoint;
+    document.getElementById('global-local-model').value = localModel;
     document.getElementById('global-api-key').value = key;
     document.getElementById('global-settings-overlay').classList.add('active');
   });
 
   document.getElementById('save-global-settings-btn').addEventListener('click', () => {
     const key = document.getElementById('global-api-key').value.trim();
+    const modelService = document.getElementById('global-model-service').value;
+    const localEndpoint = document.getElementById('global-local-endpoint').value.trim();
+    const localModel = document.getElementById('global-local-model').value.trim();
+
     localStorage.setItem('mobi-global-api-key', key);
+    localStorage.setItem('mobi-model-service', modelService);
+    localStorage.setItem('mobi-lmstudio-url', localEndpoint);
+    localStorage.setItem('mobi-lmstudio-model', localModel);
     closeModal('global-settings-overlay');
     showToast('Global settings saved!', 'success');
   });

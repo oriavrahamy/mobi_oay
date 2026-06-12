@@ -518,7 +518,7 @@
         </div>
         <div class="agent-binding-content">
           <div class="agent-avatar-display" id="bound-agent-avatar">
-            <span class="material-icons-round">help_outline</span>
+            <div id="virtual-led-matrix" class="led-matrix"></div>
           </div>
           <select id="agent-binding-select" class="form-control">
             <option value="">בחר סוכן...</option>
@@ -595,6 +595,19 @@
             <span class="material-icons-round">terminal</span>
             <p>חבר את הכרטיס כדי לראות את הלוג</p>
           </div>
+        </div>
+      </div>
+
+      <!-- Control Dashboard -->
+      <div class="bento-card control-card">
+        <div class="bento-card-header">
+          <span class="material-icons-round">gamepad</span>
+          <strong>Test Controls</strong>
+        </div>
+        <div class="control-actions" style="display:flex; flex-direction:column; gap:8px; margin-top:10px;">
+          <button class="btn btn-ghost" id="test-microbit-idle">Show Idle</button>
+          <button class="btn btn-ghost" id="test-microbit-think">Animate Think</button>
+          <button class="btn btn-ghost" id="test-microbit-talk">Animate Talk</button>
         </div>
       </div>
     </div>
@@ -939,6 +952,30 @@
       </div>
       <div class="modal-body">
         <div class="form-group">
+          <label for="global-model-service">Model Service</label>
+          <select id="global-model-service">
+            <option value="groq">Groq</option>
+            <option value="lmstudio">Local LM Studio</option>
+          </select>
+          <p style="font-size:0.75rem; color:var(--text3); margin-top:6px; line-height:1.4;">
+            Choose whether the orchestrator should use Groq or a local LM Studio deployment.
+          </p>
+        </div>
+        <div class="form-group">
+          <label for="global-local-endpoint">Local LM Studio Endpoint</label>
+          <input type="text" id="global-local-endpoint" placeholder="http://localhost:8000">
+          <p style="font-size:0.75rem; color:var(--text3); margin-top:6px; line-height:1.4;">
+            Enter the local LM Studio API URL. For example: http://localhost:8000.
+          </p>
+        </div>
+        <div class="form-group">
+          <label for="global-local-model">Local LM Studio Model Name</label>
+          <input type="text" id="global-local-model" placeholder="e.g. llama-3b">
+          <p style="font-size:0.75rem; color:var(--text3); margin-top:6px; line-height:1.4;">
+            Enter the model name configured in LM Studio.
+          </p>
+        </div>
+        <div class="form-group">
           <label for="global-api-key">Global Groq API Key</label>
           <input type="password" id="global-api-key" placeholder="gsk_...">
           <p style="font-size:0.75rem; color:var(--text3); margin-top:6px; line-height:1.4;">
@@ -968,6 +1005,7 @@
   <script src="js/chat.js"></script>
   <script src="js/collaboration.js"></script>
   <script src="js/orchestrator.js"></script>
+  <script src="js/microbit.js"></script>
   <script src="js/app.js?v=notebooklm-actions-20260601"></script>
 </body>
 </html>
