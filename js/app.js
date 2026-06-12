@@ -194,6 +194,7 @@ if (window.opener && window.location.hash.includes('access_token')) {
     memory: document.getElementById('memory-panel')
   };
   const canvasContainer = document.getElementById('canvas-container');
+  const canvasToolbar = document.getElementById('canvas-toolbar');
 
   tabs.forEach(tab => {
     tab.addEventListener('click', () => {
@@ -202,11 +203,21 @@ if (window.opener && window.location.hash.includes('access_token')) {
       const id = tab.dataset.tab;
       Object.values(tabPanels).forEach(p => p.classList.remove('active'));
       
-      // Hide canvas when switching to non-agents tabs
+      // Hide canvas and toolbar when switching to non-agents tabs
       if (id === 'agents') {
         canvasContainer.style.display = 'block';
+        if (canvasToolbar) {
+          canvasToolbar.style.opacity = '1';
+          canvasToolbar.style.pointerEvents = 'auto';
+          canvasToolbar.style.transform = 'translateX(-50%) translateY(0)';
+        }
       } else {
         canvasContainer.style.display = 'none';
+        if (canvasToolbar) {
+          canvasToolbar.style.opacity = '0';
+          canvasToolbar.style.pointerEvents = 'none';
+          canvasToolbar.style.transform = 'translateX(-50%) translateY(20px)';
+        }
       }
       
       if (tabPanels[id]) {
@@ -860,6 +871,11 @@ if (window.opener && window.location.hash.includes('access_token')) {
 
   Canvas.onBubbleClick(agentId => {
     ChatManager.showInterAgentChat(agentId);
+  });
+
+  // ── Canvas agent settings click → open settings modal ──
+  Canvas.onAgentSettingsClick(agentId => {
+    openAgentModal(agentId);
   });
 
   // ── Chat panel ──

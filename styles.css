@@ -542,6 +542,60 @@ input,select,textarea,button { font-family: inherit; font-size: inherit; }
 }
 .zoom-level { font-size: 0.75rem; color: var(--text2); padding: 0 6px; min-width: 42px; text-align: center; }
 
+/* ── CANVAS TOOLBAR (Interaction Modes) ────────────────────── */
+.canvas-toolbar {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--glass-bg-strong);
+  backdrop-filter: var(--glass-blur-sm);
+  -webkit-backdrop-filter: var(--glass-blur-sm);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--md-sys-shape-corner-full);
+  padding: 8px 12px;
+  box-shadow: var(--md-sys-elevation-level3);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.toolbar-btn {
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: var(--md-sys-shape-corner-large);
+  background: transparent;
+  color: var(--text2);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.toolbar-btn:hover {
+  background: var(--glass-bg);
+  color: var(--text);
+  box-shadow: inset 0 1px 0 var(--glass-rim);
+}
+
+.toolbar-btn.active {
+  background: linear-gradient(135deg, var(--primary), var(--accent2));
+  color: white;
+  box-shadow: 0 4px 12px var(--primary-glow), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+.toolbar-btn.active:hover {
+  box-shadow: 0 8px 20px var(--primary-glow), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
 /* ── TAB PANELS (overlay sheets) ────────────────────────────── */
 .tab-panel {
   position: fixed;

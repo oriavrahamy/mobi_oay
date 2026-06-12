@@ -6,8 +6,14 @@ const Canvas = (() => {
   let dragAgent = null, dragOffsetX = 0, dragOffsetY = 0;
   let onAgentClickCb = null;
   let onBubbleClickCb = null;
+  let onAgentSettingsClickCb = null;
   const emotionResetTimers = {};
 
+  // Canvas interaction modes
+  let currentMode = 'select'; // 'select' | 'drag' | 'settings'
+  const MODE_SELECT = 'select';
+  const MODE_DRAG = 'drag';
+  const MODE_SETTINGS = 'settings';
 
   function init() {
     container = document.getElementById('canvas-container');
@@ -39,6 +45,70 @@ const Canvas = (() => {
       zoom = 1; panX = window.innerWidth / 2 - 400; panY = (window.innerHeight - 58) / 2 - 300;
       updateTransform();
     });
+
+    // Initialize toolbar
+    initToolbar();
+
+    // Load saved mode preference
+    const savedMode = localStorage.getItem('canvas-mode') || MODE_SELECT;
+    setMode(savedMode);
+  }
+
+  // ── Toolbar Functions ──
+  function initToolbar() {
+    const toolbar = document.getElementById('canvas-toolbar');
+    if (!toolbar) return;
+
+    const buttons = toolbar.querySelectorAll('.toolbar-btn');
+    buttons.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const mode = btn.dataset.mode;
+        setMode(mode);
+        e.stopPropagation();
+      });
+    });
+  }
+
+  function setMode(mode) {
+    if (![MODE_SELECT, MODE_DRAG, MODE_SETTINGS].includes(mode)) return;
+    
+    currentMode = mode;
+    localStorage.setItem('canvas-mode', mode);
+    updateToolbarUI();
+    updateCanvasCursor();
+  }
+
+  function getMode() {
+    return currentMode;
+  }
+
+  function updateToolbarUI() {
+    const toolbar = document.getElementById('canvas-toolbar');
+    if (!toolbar) return;
+
+    const buttons = toolbar.querySelectorAll('.toolbar-btn');
+    buttons.forEach(btn => {
+      btn.classList.remove('active');
+      if (btn.dataset.mode === currentMode) {
+        btn.classList.add('active');
+      }
+    });
+  }
+
+  function updateCanvasCursor() {
+    switch (currentMode) {
+      case MODE_DRAG:
+        container.style.cursor = 'grab';
+        break;
+      case MODE_SELECT:
+        container.style.cursor = 'default';
+        break;
+      case MODE_SETTINGS:
+        container.style.cursor = 'help';
+        break;
+      default:
+        container.style.cursor = 'default';
+    }
   }
 
   function onPointerDown(e) {
@@ -50,21 +120,39 @@ const Canvas = (() => {
         if (onBubbleClickCb) onBubbleClickCb(agentEl.dataset.agentId);
         return;
       }
-      // Start drag after a small delay — or treat as click
-      const rect = agentEl.getBoundingClientRect();
-      dragAgent = agentEl;
-      dragOffsetX = e.clientX - rect.left;
-      dragOffsetY = e.clientY - rect.top;
-      dragAgent._clickStart = Date.now();
-      dragAgent._clickX = e.clientX;
-      dragAgent._clickY = e.clientY;
-      e.preventDefault();
+
+      const agentId = agentEl.dataset.agentId;
+
+      // Settings mode: open settings modal
+      if (currentMode === MODE_SETTINGS) {
+        if (onAgentSettingsClickCb) onAgentSettingsClickCb(agentId);
+        return;
+      }
+
+      // Select/Drag mode: prepare for potential drag
+      if (currentMode === MODE_SELECT) {
+        const rect = agentEl.getBoundingClientRect();
+        dragAgent = agentEl;
+        dragOffsetX = e.clientX - rect.left;
+        dragOffsetY = e.clientY - rect.top;
+        dragAgent._clickStart = Date.now();
+        dragAgent._clickX = e.clientX;
+        dragAgent._clickY = e.clientY;
+        e.preventDefault();
+        return;
+      }
+
+      // In drag mode, agents are unclickable
       return;
     }
-    isPanning = true;
-    startX = e.clientX - panX;
-    startY = e.clientY - panY;
-    container.style.cursor = 'grabbing';
+
+    // Handle canvas panning based on mode
+    if (currentMode === MODE_DRAG) {
+      isPanning = true;
+      startX = e.clientX - panX;
+      startY = e.clientY - panY;
+      container.style.cursor = 'grabbing';
+    }
   }
 
   function onPointerMove(e) {
@@ -268,12 +356,14 @@ const Canvas = (() => {
 
   function onAgentClick(cb) { onAgentClickCb = cb; }
   function onBubbleClick(cb) { onBubbleClickCb = cb; }
+  function onAgentSettingsClick(cb) { onAgentSettingsClickCb = cb; }
 
   return {
     init, addAgentToCanvas, removeAgentFromCanvas, getAgentElement,
     setAgentEmotion,
     showBubble, hideBubble, showQuestionMark, hideQuestionMark,
     moveAgentTo, getAgentPos, drawConnectionLine, removeConnectionLine,
-    clearAllConnections, onAgentClick, onBubbleClick
+    clearAllConnections, onAgentClick, onBubbleClick, onAgentSettingsClick,
+    setMode, getMode
   };
 })();
