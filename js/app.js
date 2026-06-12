@@ -193,6 +193,7 @@ if (window.opener && window.location.hash.includes('access_token')) {
     notebooklm: document.getElementById('notebooklm-panel'),
     memory: document.getElementById('memory-panel')
   };
+  const canvasContainer = document.getElementById('canvas-container');
 
   tabs.forEach(tab => {
     tab.addEventListener('click', () => {
@@ -200,6 +201,14 @@ if (window.opener && window.location.hash.includes('access_token')) {
       tab.classList.add('active');
       const id = tab.dataset.tab;
       Object.values(tabPanels).forEach(p => p.classList.remove('active'));
+      
+      // Hide canvas when switching to non-agents tabs
+      if (id === 'agents') {
+        canvasContainer.style.display = 'block';
+      } else {
+        canvasContainer.style.display = 'none';
+      }
+      
       if (tabPanels[id]) {
         tabPanels[id].classList.add('active');
         if (id === 'tools') {
